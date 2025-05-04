@@ -5,9 +5,10 @@
 - From Scratch
 
 ### 摘要: 
-Docker 的开始之旅
+Docker Beginning
 
-### 情形:
+---
+### Docker:
 
 1. 管理 Docker 进程
 
@@ -50,3 +51,55 @@ stop socket 后即可stop docker.service
     curl --unix-socket /var/run/docker.sock http://localhost/info
     # 若权限不足使用sudo提权
 ```
+---
+---
+### Docker Project
+
+项目:
+```
+my-springboot-app/
+├── Dockerfile
+├── pom.xml
+├── mvnw
+└── src/
+    └── main/
+        └── java/
+            └── com/example/demo/
+                └── DemoApplication.java
+```
+
+1. Dockerfile
+
+```Dockerfile
+FROM openjdk:17-jdk-slim
+COPY . /app
+WORKDIR /app
+RUN ./mvnw package
+CMD ["java", "-jar", "target/app.jar"]
+```
+
+1️⃣ FROM openjdk:17-jdk-slim
+
+- 指定基础镜像(根据已有的镜像)
+
+2️⃣ COPY . /app
+
+- 把当前目录下所有文件复制到容器中 /app 下
+
+        ⚠️ 注意：如果你有不需要打进镜像的文件（如 .git, logs, node_modules 等），创建 .dockerignore 文件排除它们.
+
+3️⃣ WORKDIR /app
+
+- 工作目录。后续所有的命令（如 RUN, CMD, COPY）都会在这个目录下执行
+
+4️⃣ RUN ./mvnw package
+
+- ./mvnw package: 使用 Maven Wrapper 构建项目, 生成打包后的 JAR 文件
+
+- package 是 Maven 的生命周期阶段之一, 为编译, 测试并打包为JAR
+
+5️⃣ CMD ["java", "-jar", "target/app.jar"]
+
+- java -jar target/app.jar：运行打包好的 Java 应用程序
+
+        💡 CMD 可以被 docker run 命令覆盖，适合用于设置默认行为.
