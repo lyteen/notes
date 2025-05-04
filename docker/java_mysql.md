@@ -17,6 +17,7 @@
 ├── Dockerfile         ← 构建 Docker 镜像的蓝图
 └── docker-compose.yml ← 定义多个容器如何协同工作
 ```
+
 ### 情形:
 
 1. Java 启动
