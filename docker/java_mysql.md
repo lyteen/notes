@@ -8,6 +8,15 @@
 ### 摘要: 
 关于 Docker 建立java与mysql工作环境
 
+- 项目关系:
+```
+[项目根目录]
+│
+├── src/               ← 项目源码
+├── pom.xml            ← Maven 配置
+├── Dockerfile         ← 构建 Docker 镜像的蓝图
+└── docker-compose.yml ← 定义多个容器如何协同工作
+```
 ### 情形:
 
 1. Java 启动
