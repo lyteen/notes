@@ -60,6 +60,7 @@ BUILD SUCCESSFUL in 33s
 ```
 # Use OpenJDK 17 as Based image
 FORM openjdk:17-jdk-alplne
+# TODO: Different with docker-compose.yml?
 
 # Workspace
 WORKDIR /app
@@ -77,11 +78,91 @@ output:
 BUILD SUCCESSFUL in 598ms
 7 actionable tasks: 7 up-to-date
 ```
-4. 
+4. 配置docker-compose.yml文件
 
+```Yaml
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  java-app:
+    build: .
+    image: my-java-app:1.0
+    container_name: java-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+```
 <details>
-    <summary>补充</summary>
+    <summary>docker-compose</summary>
         <ul>
-	      <li><strong>.</strong>： .</li>
+	      <li>Docker编排工具, 用于多容器应用</li>
+          <li>一键启动多个容器，并自动处理依赖关系(如数据库先启动)</li>
+          <li>通过 YAML 文件定义服务，然后执行 docker-compose up 启动整个应用栈</li> 
         </ul>
 </details>
+
+
+- 运行 docker-compose
+```bash
+    sudo docker-compose up -d
+    # sudo docker-compose up --build #-d
+```
+<details>
+    <summary>docker-compose up -d 与 docker-compose up --build的区别</summary>
+        <ul>
+	        docker-compose up -d: 仅启动已经构建的容器, 并在后台运行(-d)
+            docker-compose up --build: 强制重新构建容器, (-d是否后台(前台)运行)
+        </ul>
+</details>
+
+- 检查docker容器状态
+```bash
+    sudo docker ps
+```
+
+5. 容器操作
+
+- 进入容器
+
+```bash
+    docker exec -it java-app sh
+    # docker exec -it mysql bash
+```
+
+- 停止容器
+
+```bash
+    sudo docker-compose stop
+```
+
+- 删除容器
+
+```bash
+    sudo docker-compose down
+    # 并删除数据卷
+    sudo docker-compose down -v
+```
+
+
